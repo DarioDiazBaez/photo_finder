@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import './App.css';
 import Buscador from "./componentes/Buscador";
 import Galeria from "./componentes/Galeria";
 
-class App extends Component {
+const numeropages = 10;
+export default class App extends Component {
 
   state = {
     busqueda : "",
     img : [],
-    pagina : 1
+    pagina : 1,
   }
 
   busqueda = (e)=>{
@@ -23,6 +23,7 @@ class App extends Component {
   paginasiguiente = (e)=>{
     let pagina= this.state.pagina;
     pagina ++;
+    if (pagina<numeropages){pagina=numeropages;}
     this.setState(
     {
       pagina : pagina
@@ -39,7 +40,7 @@ class App extends Component {
     },()=>{this.componentDidMount()})  }
 
   componentDidMount() {
-    const url = `https://pixabay.com/api/?key=25437974-b570aef58a62559492507007c&&q=${this.state.busqueda}&&per_page=20&&page=${this.state.pagina}`;
+    const url = `https://pixabay.com/api/?key=25437974-b570aef58a62559492507007c&&q=${this.state.busqueda}&&per_page=25&&page=${this.state.pagina}`;
     fetch(url)
       .then(response => response.json())
       .then(data => this.setState({img : data.hits}))
@@ -47,24 +48,18 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="App bg-secondary" style={{height: "100vh"}}>
         <Buscador busqueda={this.busqueda}/>
         <Galeria imagenes={this.state.img}/>
-        <form className="botones">
-          <input 
-            type="button"
-            value="anterior"
-            onClick={this.paginaanterior}
-            />
-          <input 
-            type="button"
-            value="siguiente"
-            onClick={this.paginasiguiente}
-            />
+        <form className="d-flex justify-content-center bg-secondary">
+          <input type="button" className="btn btn-primary mx-1 my-3"
+          value="anterior"
+          onClick={this.paginaanterior}/>
+          <input type="button" className="btn btn-primary mx-1 my-3"
+          value="siguiente"
+          onClick={this.paginasiguiente}/>
         </form>
       </div>
     );
   }
 }
-
-export default App;
